@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PlaybookPro – Football Playbook Builder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>PlaybookPro</h1>
+      <p class="subtitle">Build and organize your American Football playbook</p>
+    </header>
+
+    <main class="layout">
+      <section class="panel" id="formations-panel">
+        <h2>Formations</h2>
+
+        <form id="formation-form" class="form-card">
+          <h3>Create / Edit Formation</h3>
+          <label>
+            Name*
+            <input type="text" id="formation-name" required />
+          </label>
+          <label>
+            Personnel
+            <input type="text" id="formation-personnel" placeholder="e.g. 11, 12, 21" />
+          </label>
+          <label>
+            Description
+            <textarea id="formation-description" rows="3"></textarea>
+          </label>
+          <div class="form-actions">
+            <button type="submit" id="formation-save-btn">Save Formation</button>
+            <button type="button" id="formation-reset-btn" class="secondary">Clear</button>
+            <button type="button" id="formation-delete-btn" class="danger" disabled>
+              Delete
+            </button>
+          </div>
+          <p id="formation-message" class="message"></p>
+        </form>
+
+        <div class="list-card">
+          <h3>Formation List</h3>
+          <ul id="formations-list" class="item-list"></ul>
+          <p id="formations-loading" class="status-text">Loading formations...</p>
+        </div>
+      </section>
+
+      <section class="panel" id="plays-panel">
+        <h2>Plays</h2>
+
+        <div class="filters-row">
+          <label>
+            Filter by Formation
+            <select id="plays-formation-filter">
+              <option value="">All formations</option>
+            </select>
+          </label>
+          <label>
+            Play Type
+            <select id="plays-type-filter">
+              <option value="">All</option>
+              <option value="run">Run</option>
+              <option value="pass">Pass</option>
+              <option value="rpo">RPO</option>
+            </select>
+          </label>
+          <label>
+            Search
+            <input type="text" id="plays-search" placeholder="Search by play name" />
+          </label>
+        </div>
+
+        <form id="play-form" class="form-card">
+          <h3>Create / Edit Play</h3>
+          <label>
+            Formation*
+            <select id="play-formation-select" required></select>
+          </label>
+          <label>
+            Name*
+            <input type="text" id="play-name" required />
+          </label>
+          <label>
+            Play Type*
+            <select id="play-type" required>
+              <option value="run">Run</option>
+              <option value="pass">Pass</option>
+              <option value="rpo">RPO</option>
+            </select>
+          </label>
+          <label>
+            Notes
+            <textarea id="play-notes" rows="3"></textarea>
+          </label>
+          <div class="form-actions">
+            <button type="submit" id="play-save-btn">Save Play</button>
+            <button type="button" id="play-reset-btn" class="secondary">Clear</button>
+            <button type="button" id="play-delete-btn" class="danger" disabled>
+              Delete
+            </button>
+          </div>
+          <p id="play-message" class="message"></p>
+        </form>
+
+        <div class="list-card">
+          <h3>Play List</h3>
+          <ul id="plays-list" class="item-list"></ul>
+          <p id="plays-loading" class="status-text">Loading plays...</p>
+        </div>
+      </section>
+
+      <section class="panel" id="assignments-panel">
+        <h2>Assignments</h2>
+
+        <p class="hint">
+          Select a play from the middle column to view and edit its position assignments.
+        </p>
+
+        <form id="assignment-form" class="form-card">
+          <h3>Create / Edit Assignment</h3>
+          <label>
+            Selected Play
+            <input type="text" id="assignment-play-name" disabled />
+          </label>
+          <label>
+            Position* (e.g. WR1, LT, QB)
+            <input type="text" id="assignment-position" required />
+          </label>
+          <label>
+            Assignment Text*
+            <textarea id="assignment-text" rows="3" required></textarea>
+          </label>
+          <div class="form-actions">
+            <button type="submit" id="assignment-save-btn" disabled>
+              Save Assignment
+            </button>
+            <button type="button" id="assignment-reset-btn" class="secondary">Clear</button>
+            <button type="button" id="assignment-delete-btn" class="danger" disabled>
+              Delete
+            </button>
+          </div>
+          <p id="assignment-message" class="message"></p>
+        </form>
+
+        <div class="list-card">
+          <h3>Assignment List</h3>
+          <ul id="assignments-list" class="item-list"></ul>
+          <p id="assignments-loading" class="status-text">No play selected.</p>
+        </div>
+      </section>
+    </main>
+
+    <div id="global-toast" class="toast hidden"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
+
+

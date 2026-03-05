@@ -1,0 +1,32 @@
+{
+  "name": "playbook-builder",
+  "version": "1.0.0",
+  "description": "\"An app to create American Football plays. Create assignments, put into formations, etc.\"",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dupadhyay1/my-first-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dupadhyay1/my-first-project/issues"
+  },
+  "homepage": "https://github.com/dupadhyay1/my-first-project#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
