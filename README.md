@@ -47,13 +47,4 @@ Foreign‑key relationships and sample data are defined in `database.sql`.
 
 The UI shows **success and error messages** under each form and a small toast notification in the bottom‑right corner, satisfying the user‑feedback and dynamic‑content requirements in your rubric.
 
-### Notes for Your Video
-- Show the `database.sql` file and explain:
-  - 3 tables, each with a primary key
-  - 2 foreign‑key relationships (`plays → formations`, `assignments → plays`)
-  - Sample data inserts (5+ rows per table)
-- Demonstrate:
-  - Creating, reading, updating, and deleting formations, plays, and assignments
-  - Filtering/searching plays by formation and play type
-- Mention a technical challenge (for example: wiring up the frontend fetch calls to the Express API with proper error handling) and how you solved it.
 
