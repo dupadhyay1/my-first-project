@@ -39,6 +39,9 @@ const assignmentDeleteBtn = document.getElementById('assignment-delete-btn');
 const assignmentMessageEl = document.getElementById('assignment-message');
 
 const globalToast = document.getElementById('global-toast');
+const nflTeamsCard = document.getElementById('nfl-teams-card');
+const nflTeamsGrid = document.getElementById('nfl-teams-grid');
+const nflTeamsLoading = document.getElementById('nfl-teams-loading');
 
 // In-memory UI state
 let formations = [];
@@ -134,6 +137,7 @@ function renderFormations() {
       renderFormations();
       populateFormationSelects();
       applyPlayFilters();
+      loadNflTeams(f.formation_id);
     });
     formationsListEl.appendChild(li);
   });
@@ -213,6 +217,35 @@ formationDeleteBtn.addEventListener('click', async () => {
     showToast(err.message, 'error');
   }
 });
+
+// ------- NFL Teams (TheSportsDB proxy) -------
+
+async function loadNflTeams(formationId) {
+  nflTeamsCard.style.display = 'block';
+  nflTeamsGrid.innerHTML = '';
+  nflTeamsLoading.textContent = 'Loading NFL teams...';
+  try {
+    const data = await apiRequest(`/api/formations/${formationId}/nfl-teams`);
+    nflTeamsLoading.textContent = data.personnel
+      ? `NFL teams known for ${data.personnel} personnel:`
+      : 'NFL teams:';
+    data.teams.forEach((team) => {
+      const card = document.createElement('div');
+      card.className = 'nfl-team-card';
+      card.innerHTML = `
+        ${team.badge ? `<img src="${team.badge}" alt="${team.name} badge" />` : ''}
+        <div class="nfl-team-name">${team.name}</div>
+        ${team.location ? `<div class="nfl-team-stadium">${team.location}</div>` : ''}
+      `;
+      nflTeamsGrid.appendChild(card);
+    });
+    if (data.teams.length === 0) {
+      nflTeamsLoading.textContent = 'No teams found for this personnel group.';
+    }
+  } catch (err) {
+    nflTeamsLoading.textContent = 'Could not load NFL teams.';
+  }
+}
 
 // ------- Plays -------
 

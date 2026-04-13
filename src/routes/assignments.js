@@ -3,6 +3,24 @@ const db = require('../db');
 
 const router = express.Router();
 
+// Get one assignment by ID
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await db.query(
+      'SELECT assignment_id, play_id, position, assignment_text, created_at FROM assignments WHERE assignment_id = $1',
+      [id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Assignment not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch assignment' });
+  }
+});
+
 // Get assignments for a given play_id
 router.get('/', async (req, res) => {
   const { play_id } = req.query;

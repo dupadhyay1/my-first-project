@@ -3,6 +3,24 @@ const db = require('../db');
 
 const router = express.Router();
 
+// Get one play by ID
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await db.query(
+      'SELECT play_id, formation_id, name, play_type, notes, created_at FROM plays WHERE play_id = $1',
+      [id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Play not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch play' });
+  }
+});
+
 // Get plays with optional filters: formation_id, play_type, search
 router.get('/', async (req, res) => {
   const { formation_id, play_type, search } = req.query;
