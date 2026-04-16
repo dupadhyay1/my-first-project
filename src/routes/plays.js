@@ -60,8 +60,20 @@ router.get('/', async (req, res) => {
 // Create play
 router.post('/', async (req, res) => {
   const { formation_id, name, play_type, notes } = req.body;
-  if (!formation_id || !name || !play_type) {
-    return res.status(400).json({ error: 'formation_id, name, and play_type are required' });
+  if (!formation_id) {
+    return res.status(400).json({ error: 'formation_id is required' });
+  }
+  if (typeof formation_id !== 'number') {
+    return res.status(400).json({ error: 'formation_id must be a number' });
+  }
+  if (!name || name.trim() === '') {
+    return res.status(400).json({ error: 'name is required' });
+  }
+  if (!play_type) {
+    return res.status(400).json({ error: 'play_type is required' });
+  }
+  if (!['run', 'pass', 'rpo'].includes(play_type)) {
+    return res.status(400).json({ error: 'play_type must be run, pass, or rpo' });
   }
   try {
     const result = await db.query(
@@ -79,6 +91,12 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { formation_id, name, play_type, notes } = req.body;
+  if (!name || name.trim() === '') {
+    return res.status(400).json({ error: 'name is required' });
+  }
+  if (play_type && !['run', 'pass', 'rpo'].includes(play_type)) {
+    return res.status(400).json({ error: 'play_type must be run, pass, or rpo' });
+  }
   try {
     const result = await db.query(
       'UPDATE plays SET formation_id = $1, name = $2, play_type = $3, notes = $4 WHERE play_id = $5 RETURNING *',
@@ -98,11 +116,14 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await db.query('DELETE FROM plays WHERE play_id = $1', [id]);
+    const result = await db.query(
+      'DELETE FROM plays WHERE play_id = $1 RETURNING *',
+      [id]
+    );
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Play not found' });
     }
-    res.status(204).send();
+    res.status(200).json({ message: 'Play deleted', deleted: result.rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to delete play' });

@@ -37,13 +37,13 @@ router.get('/', async (req, res) => {
 // Create formation
 router.post('/', async (req, res) => {
   const { name, personnel, description } = req.body;
-  if (!name) {
-    return res.status(400).json({ error: 'Name is required' });
+  if (!name || name.trim() === '') {
+    return res.status(400).json({ error: 'name is required' });
   }
   try {
     const result = await db.query(
       'INSERT INTO formations (name, personnel, description) VALUES ($1, $2, $3) RETURNING *',
-      [name, personnel, description]
+      [name.trim(), personnel, description]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -56,6 +56,9 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { name, personnel, description } = req.body;
+  if (!name || name.trim() === '') {
+    return res.status(400).json({ error: 'name is required' });
+  }
   try {
     const result = await db.query(
       'UPDATE formations SET name = $1, personnel = $2, description = $3 WHERE formation_id = $4 RETURNING *',
@@ -75,11 +78,14 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await db.query('DELETE FROM formations WHERE formation_id = $1', [id]);
+    const result = await db.query(
+      'DELETE FROM formations WHERE formation_id = $1 RETURNING *',
+      [id]
+    );
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Formation not found' });
     }
-    res.status(204).send();
+    res.status(200).json({ message: 'Formation deleted', deleted: result.rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to delete formation' });

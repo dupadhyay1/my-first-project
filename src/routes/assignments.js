@@ -42,8 +42,17 @@ router.get('/', async (req, res) => {
 // Create assignment
 router.post('/', async (req, res) => {
   const { play_id, position, assignment_text } = req.body;
-  if (!play_id || !position || !assignment_text) {
-    return res.status(400).json({ error: 'play_id, position, and assignment_text are required' });
+  if (!play_id) {
+    return res.status(400).json({ error: 'play_id is required' });
+  }
+  if (typeof play_id !== 'number') {
+    return res.status(400).json({ error: 'play_id must be a number' });
+  }
+  if (!position || position.trim() === '') {
+    return res.status(400).json({ error: 'position is required' });
+  }
+  if (!assignment_text || assignment_text.trim() === '') {
+    return res.status(400).json({ error: 'assignment_text is required' });
   }
   try {
     const result = await db.query(
@@ -61,6 +70,12 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { position, assignment_text } = req.body;
+  if (!position || position.trim() === '') {
+    return res.status(400).json({ error: 'position is required' });
+  }
+  if (!assignment_text || assignment_text.trim() === '') {
+    return res.status(400).json({ error: 'assignment_text is required' });
+  }
   try {
     const result = await db.query(
       'UPDATE assignments SET position = $1, assignment_text = $2 WHERE assignment_id = $3 RETURNING *',
@@ -80,11 +95,14 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await db.query('DELETE FROM assignments WHERE assignment_id = $1', [id]);
+    const result = await db.query(
+      'DELETE FROM assignments WHERE assignment_id = $1 RETURNING *',
+      [id]
+    );
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Assignment not found' });
     }
-    res.status(204).send();
+    res.status(200).json({ message: 'Assignment deleted', deleted: result.rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to delete assignment' });
